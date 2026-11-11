@@ -211,6 +211,10 @@ export async function applyEnvPresets(
   status: AuthStatusResponse,
   options?: { verified?: boolean }
 ): Promise<void> {
+  // 部署能力优先于本地偏好：即使旧配置选过内置代理，服务端禁用后也不应再发起代理请求
+  if (typeof status.serverProxyDisabled === 'boolean') {
+    useAppStore.setState({ serverProxyDisabled: status.serverProxyDisabled });
+  }
   if (Array.isArray(status.defaultSources)) {
     useAppStore.getState().setEnvSources(status.defaultSources);
   }
@@ -241,7 +245,8 @@ export async function applyEnvPresets(
   // 「已选择」标记），已有偏好的用户——包括 touched 标记上线前手动改过的——不被覆盖；
   // custom 需要手填模板，无论有无标记都视为明确选择，不覆盖。
   // 直写 setState 而非 updateSettings：自动预置不算用户主动选择，不打「已选择」标记。
-  if (status.defaultImageMode) {
+  // 服务端禁用代理时不再把封面默认值设成 proxy；否则会把用户从可用的直连配置改成禁用态
+  if (status.defaultImageMode && !status.serverProxyDisabled) {
     const s = useAppStore.getState();
     if (!s.imageProxyModeTouched && s.imageProxyMode === 'direct') {
       useAppStore.setState({ imageProxyMode: status.defaultImageMode });

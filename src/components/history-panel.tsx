@@ -138,6 +138,7 @@ export function HistoryPanel({ open, onClose }: { open: boolean; onClose: () => 
 function HistoryItem({ item }: { item: HistoryEntry }) {
   // 精确订阅：整份 useAppStore() 会让每条历史在任意 store 变化（搜索健康度、测活写回等）时重渲染
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
   const customAPIs = useAppStore((s) => s.customAPIs);
   const envSources = useAppStore((s) => s.envSources);
@@ -199,6 +200,7 @@ function HistoryItem({ item }: { item: HistoryEntry }) {
               url={item.pic}
               mode={imageProxyMode}
               customProxy={customImageProxy}
+              serverProxyDisabled={serverProxyDisabled}
               alt=""
               className="w-10 h-14 object-cover rounded bg-chip"
               onExhausted={() => setImgFailed(true)}

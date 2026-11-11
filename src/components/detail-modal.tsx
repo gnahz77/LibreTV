@@ -170,6 +170,7 @@ export function DetailModal({ item, onClose }: { item: SearchResultItem | null; 
                     url={item.pic}
                     mode={store.imageProxyMode}
                     customProxy={store.customImageProxy}
+                    serverProxyDisabled={store.serverProxyDisabled}
                     alt={item.name}
                     // self-start 不能省：这一行是 flex（默认 align-items: stretch），
                     // 少了它海报会被信息列的高度拉变形，aspect-[2/3] 让位给拉伸高度，

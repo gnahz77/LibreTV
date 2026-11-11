@@ -62,7 +62,8 @@ export function buildImageUrl(
 export function buildImageCandidates(
   url: string | undefined,
   mode: 'direct' | 'proxy' | 'custom',
-  customTemplate: string
+  customTemplate: string,
+  serverProxyDisabled = false
 ): string[] {
   const built = buildImageUrl(url, mode, customTemplate);
   if (!built || !url) return [];
@@ -72,6 +73,10 @@ export function buildImageCandidates(
         url.replace(/img\d+\.doubanio\.com/g, 'img.doubanio.cmliussss.com'),
       ]
     : [];
+  // 服务端硬禁用时，封面也不能再试内置 /api/proxy；保留 public mirrors 与直连。
+  if (serverProxyDisabled) {
+    return [...new Set([url, ...mirrors])];
+  }
   if (mode === 'proxy') {
     return [...new Set([built, ...mirrors, url])];
   }

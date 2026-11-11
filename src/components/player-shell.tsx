@@ -73,6 +73,8 @@ interface PlayerShellProps {
    * 关闭时完全不接入音频链路；播放中改开关由 setBoost 走「直通/增益」切换。
    */
   volumeBoost: boolean;
+  /** 部署者禁用服务器媒体代理时，直连失败不再回退 /api/proxy */
+  serverProxyDisabled?: boolean;
   /**
    * 底部细进度条（默认 true）：控制栏收起后是否在画面底边常驻一条 3px 进度线。
    * 关闭后收起即完全隐藏。类名同步见 lib/mini-progress-bar.ts。
@@ -119,6 +121,7 @@ export function PlayerShell({
   skipMark,
   autoSkipSegments,
   volumeBoost,
+  serverProxyDisabled = false,
   miniProgressBar = true,
   pendingStart,
   onPendingStart,
@@ -444,6 +447,7 @@ export function PlayerShell({
           // （同源 cookie 鉴权，规避 CORS/防盗链/分片被拒）
           if (
             allowProxyFallback &&
+            !serverProxyDisabled &&
             !mediaUrl.startsWith('/api/proxy') &&
             (decision.attempt >= 2 || data.details === 'manifestLoadError')
           ) {

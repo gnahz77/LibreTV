@@ -58,6 +58,20 @@ describe('buildImageCandidates', () => {
     ]);
   });
 
+  it('服务端禁用代理：proxy 模式也不得生成 /api/proxy 候选', () => {
+    expect(buildImageCandidates(DOUBAN, 'proxy', '', true)).toEqual([
+      DOUBAN,
+      'https://img.doubanio.cmliussss.net/view/photo/m/poster.jpg',
+      'https://img.doubanio.cmliussss.com/view/photo/m/poster.jpg',
+    ]);
+  });
+
+  it('服务端禁用代理：direct 模式去掉末尾内置代理，保留直连与公共镜像', () => {
+    expect(buildImageCandidates('https://bdstatic.com/x.jpg', 'direct', '', true)).toEqual([
+      'https://bdstatic.com/x.jpg',
+    ]);
+  });
+
   it('custom 模式为单一候选（模板错误显式暴露，不静默回退）', () => {
     expect(buildImageCandidates(DOUBAN, 'custom', 'https://p.example.com/?u=')).toHaveLength(1);
     expect(buildImageCandidates(undefined, 'direct', '')).toEqual([]);

@@ -17,3 +17,20 @@ export function getEnvImageMode(): ImageModeValue | undefined {
   );
   return undefined;
 }
+
+/**
+ * 部署者通过 DISABLE_SERVER_PROXY=1 硬禁用本站媒体中转。
+ * 关闭 /api/proxy 与 /api/live/stream 后，视频、直播、下载与封面图都必须由浏览器直连上游；
+ * /api/detail、搜索等「取数据」的服务端请求不算媒体中转，不受此开关影响。
+ * 仅接受 1 / true / yes / on（大小写不敏感）；其他非空值告警并忽略，避免拼写错误把地址误判为关闭。
+ */
+export function isServerProxyDisabled(): boolean {
+  const raw = process.env.DISABLE_SERVER_PROXY?.trim().toLowerCase();
+  if (!raw || ['0', 'false', 'no', 'off'].includes(raw)) return false;
+  if (['1', 'true', 'yes', 'on'].includes(raw)) return true;
+  console.warn(
+    '[LibreTV] DISABLE_SERVER_PROXY 取值无效，已忽略（可选 0 / 1，或 true / false）：',
+    raw
+  );
+  return false;
+}

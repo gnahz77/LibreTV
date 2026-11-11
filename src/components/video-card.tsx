@@ -82,6 +82,7 @@ export function AggregatedCard({
   sources?: SourceConfig[];
 }) {
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
   const [imgFailed, setImgFailed] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -167,6 +168,7 @@ export function AggregatedCard({
               url={group.pic}
               mode={imageProxyMode}
               customProxy={customImageProxy}
+              serverProxyDisabled={serverProxyDisabled}
               alt={group.name}
               className="absolute inset-0 h-full w-full object-cover"
               onExhausted={() => setImgFailed(true)}
@@ -334,6 +336,7 @@ export function AggregatedCard({
 /** 影片卡片：封面加载失败时逐级降级到占位图（未聚合的单一结果使用） */
 export function VideoCard({ item, onClick }: { item: SearchResultItem; onClick: () => void }) {
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
   const [imgFailed, setImgFailed] = useState(false);
   const showImg = !!item.pic && !imgFailed;
@@ -359,6 +362,7 @@ export function VideoCard({ item, onClick }: { item: SearchResultItem; onClick: 
               url={item.pic}
               mode={imageProxyMode}
               customProxy={customImageProxy}
+              serverProxyDisabled={serverProxyDisabled}
               alt={item.name}
               className="h-full w-full object-cover"
               onExhausted={() => setImgFailed(true)}
@@ -396,6 +400,7 @@ export function VideoCard({ item, onClick }: { item: SearchResultItem; onClick: 
 /** 豆瓣推荐卡片（无来源徽章，点击直接搜索） */
 export function DoubanCard({ item, onClick }: { item: { title: string; cover: string; rating?: string }; onClick: () => void }) {
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
   const [imgFailed, setImgFailed] = useState(false);
   useEffect(() => setImgFailed(false), [item.cover]);
@@ -420,6 +425,7 @@ export function DoubanCard({ item, onClick }: { item: { title: string; cover: st
             url={item.cover}
             mode={imageProxyMode}
             customProxy={customImageProxy}
+            serverProxyDisabled={serverProxyDisabled}
             alt={item.title}
             className="w-full h-full object-cover"
             onExhausted={() => setImgFailed(true)}

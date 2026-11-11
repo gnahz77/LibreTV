@@ -107,6 +107,7 @@ PASSWORD=your-password npm start   # 监听 8080
 | --- | --- | --- |
 | `PASSWORD` | 是 | 访问密码；未设置时站点会提示管理员配置 |
 | `PROXY_SECRET` | 否 | 会话/代理签名密钥；不设置时从 PASSWORD 派生（多实例部署建议显式设置） |
+| `DISABLE_SERVER_PROXY` | 否 | 设为 `1` 时硬禁用 `/api/proxy` 与 `/api/live/stream`：视频/直播不再回退服务器中转，下载不能选择中转，封面图也不再使用内置代理。搜索、详情等服务端取数不受影响；直连被 CORS/防盗链拦下的源将无法播放 |
 | `DEFAULT_SOURCES` | 否 | 预置采集站（JSON 数组），用户端自动出现且默认勾选，详见[配置文档](https://libretv.is-an.org/wiki/Configuration.html) |
 | `REQUEST_TIMEOUT` | 否 | 代理上游请求超时（毫秒），默认 8000 |
 | `MAX_RETRIES` | 否 | 代理请求重试次数，默认 1 |

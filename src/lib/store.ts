@@ -47,6 +47,8 @@ export interface AppSettings {
   /** 用户是否在设置中主动选择过封面图加载方式；为 false 时部署者的 DEFAULT_IMAGE_MODE 默认值可生效 */
   imageProxyModeTouched: boolean;
   customImageProxy: string;
+  /** 部署者硬禁用服务器媒体代理；运行期由 /api/status 下发，不持久化 */
+  serverProxyDisabled: boolean;
 }
 
 /** 一次订阅同步导入的数量（点播 / 直播），用于列表内展示同步结果 */
@@ -362,6 +364,8 @@ export const useAppStore = create<AppState>()(
       imageProxyMode: 'direct',
       imageProxyModeTouched: false,
       customImageProxy: '',
+      // 非持久化：每次启动均由 /api/status 下发，避免部署者关闭能力后旧 localStorage 仍尝试代理
+      serverProxyDisabled: false,
 
       addCustomApi: (api) => {
         const list = get().customAPIs;

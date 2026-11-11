@@ -685,6 +685,7 @@ function VideoCachePanel() {
 
 function ImagePanel() {
   const store = useAppStore();
+  const proxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const mode = store.imageProxyMode;
   const description: Record<'direct' | 'proxy' | 'custom', string> = {
     direct: '原站直连；豆瓣封面自动换公共镜像，仍失败回退内置代理。最省服务器流量',
@@ -695,18 +696,24 @@ function ImagePanel() {
     <section>
       <SectionTitle title="封面图加载" />
       <div className="space-y-2">
-        <SelectRow
-          label="加载方式"
-          value={mode}
-          description={description[mode]}
-          onChange={(v) => store.updateSettings({ imageProxyMode: v as 'direct' | 'proxy' | 'custom' })}
-          options={[
-            { value: 'direct', label: '直连优先', hint: '最省服务器流量' },
-            { value: 'proxy', label: '内置代理', hint: '最稳定' },
-            { value: 'custom', label: '自定义', hint: '自建转发模板' },
-          ]}
-        />
-        {mode === 'custom' && <CustomProxyInput />}
+        {proxyDisabled ? (
+          <p className="text-xs text-faint">
+            管理员已通过 DISABLE_SERVER_PROXY 禁用本站代理，封面将直连图床或公共镜像；内置代理选项暂不可用。
+          </p>
+        ) : (
+          <SelectRow
+            label="加载方式"
+            value={mode}
+            description={description[mode]}
+            onChange={(v) => store.updateSettings({ imageProxyMode: v as 'direct' | 'proxy' | 'custom' })}
+            options={[
+              { value: 'direct', label: '直连优先', hint: '最省服务器流量' },
+              { value: 'proxy', label: '内置代理', hint: '最稳定' },
+              { value: 'custom', label: '自定义', hint: '自建转发模板' },
+            ]}
+          />
+        )}
+        {!proxyDisabled && mode === 'custom' && <CustomProxyInput />}
       </div>
     </section>
   );

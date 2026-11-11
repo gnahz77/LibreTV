@@ -8,6 +8,8 @@ interface SmartImageProps {
   url?: string;
   mode: 'direct' | 'proxy' | 'custom';
   customProxy?: string;
+  /** 部署者禁用服务器代理时，候选链不包含 /api/proxy */
+  serverProxyDisabled?: boolean;
   alt: string;
   className?: string;
   loading?: 'lazy' | 'eager';
@@ -25,16 +27,17 @@ export function SmartImage({
   url,
   mode,
   customProxy = '',
+  serverProxyDisabled = false,
   alt,
   className,
   loading = 'lazy',
   onExhausted,
 }: SmartImageProps) {
-  const candidates = buildImageCandidates(url, mode, customProxy);
+  const candidates = buildImageCandidates(url, mode, customProxy, serverProxyDisabled);
   const [idx, setIdx] = useState(0);
 
   // 地址或加载方式变化时重置降级进度
-  useEffect(() => setIdx(0), [url, mode, customProxy]);
+  useEffect(() => setIdx(0), [url, mode, customProxy, serverProxyDisabled]);
   useEffect(() => {
     if (idx >= candidates.length) onExhausted?.();
     // 候选数组随 url/mode 变化，length 是充分的稳定信号

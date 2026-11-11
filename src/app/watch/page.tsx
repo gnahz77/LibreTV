@@ -327,6 +327,7 @@ function WatchContent() {
                   skipMark={skipMark}
                   autoSkipSegments={store.autoSkipSegments}
                   volumeBoost={store.volumeBoost}
+                  serverProxyDisabled={store.serverProxyDisabled}
                   miniProgressBar={store.miniProgressBar}
                   pendingStart={pendingStart}
                   onPendingStart={setPendingStart}

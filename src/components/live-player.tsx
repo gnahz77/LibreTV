@@ -51,9 +51,11 @@ interface LivePlayerProps {
   onNextChannel?: () => void;
   /** 音量放大（Web Audio 增益链）：默认关闭，关闭时完全不接入音频链路 */
   volumeBoost: boolean;
+  /** 部署者禁用服务器媒体代理时，直连失败不再回退 /api/live/stream */
+  serverProxyDisabled?: boolean;
 }
 
-export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoost }: LivePlayerProps) {
+export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoost, serverProxyDisabled = false }: LivePlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const artRef = useRef<any>(null);
@@ -136,7 +138,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
         video.removeEventListener('error', onError);
         nativeCleanup = null;
         if (disposed || destroyed) return;
-        if (allowProxyFallback && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
+        if (allowProxyFallback && !serverProxyDisabled && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
           showHint('直连失败，改用代理重试...');
           setupNative(video, proxyUrl(url), false, failMessage);
           return;
@@ -201,6 +203,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
         if (!playbackStarted) {
           if (
             stage === 'direct' &&
+            !serverProxyDisabled &&
             !mediaUrl.startsWith(STREAM_PROXY_PREFIX) &&
             (data.details === 'manifestLoadError' || data.type === Hls.ErrorTypes.NETWORK_ERROR)
           ) {
@@ -264,7 +267,7 @@ export function LivePlayer({ url, title, onPrevChannel, onNextChannel, volumeBoo
       player.load();
       player.on(Mpegts.Events.ERROR, (errType: string) => {
         if (disposed || destroyed) return;
-        if (!playbackStarted && allowProxyFallback && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
+        if (!playbackStarted && allowProxyFallback && !serverProxyDisabled && !mediaUrl.startsWith(STREAM_PROXY_PREFIX)) {
           showHint('直连失败，改用代理重试...');
           void setupFlv(video, proxyUrl(url), false);
           return;

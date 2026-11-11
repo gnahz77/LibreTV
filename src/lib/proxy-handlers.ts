@@ -3,6 +3,7 @@ import { guardRequest, jsonError } from '@/lib/api-guard';
 import { checkLiveUrlAllowed, isBlockedByDNS, isValidProxyUrl } from '@/lib/ssrf';
 import { fetchWithSafeRedirects } from '@/lib/fetch-utils';
 import { rewriteM3u8, LIVE_STREAM_BASE } from '@/lib/m3u8';
+import { isServerProxyDisabled } from '@/lib/env-image-mode';
 
 /**
  * 代理目标地址的两种传入形式：
@@ -69,6 +70,9 @@ export function decodePathTarget(encodedUrl: string): string {
  * - m3u8 文本重写为代理地址，分片/key/map 全部经本站转发，规避上游 CORS。
  */
 export async function handleProxyRequest(req: Request, targetUrl: string): Promise<Response> {
+  if (isServerProxyDisabled()) {
+    return new NextResponse('服务器已禁用媒体代理', { status: 403 });
+  }
   const guarded = guardRequest(req);
   if (guarded && !looksLikeImageUrl(targetUrl)) return guarded;
 
@@ -166,6 +170,9 @@ export async function handleProxyRequest(req: Request, targetUrl: string): Promi
  * - 部署者可设 LIVE_ALLOW_PRIVATE=1 显式放行内网自建源（默认拒绝）。
  */
 export async function handleLiveStreamRequest(req: Request, targetUrl: string): Promise<Response> {
+  if (isServerProxyDisabled()) {
+    return jsonError('服务器已禁用媒体代理', 403);
+  }
   const guarded = guardRequest(req);
   if (guarded) return guarded;
 

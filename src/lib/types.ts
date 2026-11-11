@@ -140,6 +140,8 @@ export interface AuthStatusResponse {
   defaultRecommendSource: 'douban' | 'bangumi' | 'hot-list' | null;
   /** 部署者通过 DEFAULT_IMAGE_MODE 环境变量指定的封面图加载方式默认值（未配置时为 null） */
   defaultImageMode: 'direct' | 'proxy' | null;
+  /** 部署者通过 DISABLE_SERVER_PROXY=1 禁用 /api/proxy 与 /api/live/stream */
+  serverProxyDisabled: boolean;
 }
 
 // —— 直播 / IPTV ——

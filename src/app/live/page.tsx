@@ -48,6 +48,7 @@ function LiveContent() {
   const liveFavorites = useAppStore((s) => s.liveFavorites);
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
   const volumeBoost = useAppStore((s) => s.volumeBoost);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
   const { verified } = useAuth();
   const [copied, setCopied] = useState(false);
@@ -233,6 +234,7 @@ function LiveContent() {
                   onPrevChannel={goPrevChannel}
                   onNextChannel={goNextChannel}
                   volumeBoost={volumeBoost}
+                  serverProxyDisabled={serverProxyDisabled}
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-black">
@@ -259,6 +261,7 @@ function LiveContent() {
                       url={logo}
                       mode={imageProxyMode}
                       customProxy={customImageProxy}
+                      serverProxyDisabled={serverProxyDisabled}
                       alt=""
                       className="w-full h-full object-contain"
                       onExhausted={() => setLogoFailed(true)}

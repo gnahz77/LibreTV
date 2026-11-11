@@ -16,6 +16,8 @@ services:
       - PASSWORD=${PASSWORD:?请在 .env 中设置 PASSWORD}
       # 可选：会话/代理签名密钥（多实例部署建议显式设置：openssl rand -hex 32）
       # - PROXY_SECRET=your-secret
+      # 可选：硬禁用服务器媒体/图片代理（1/true/yes/on）；搜索/详情取数不受影响
+      # - DISABLE_SERVER_PROXY=1
       # 可选：Cookie Secure 策略覆盖（true=强制开启 / false=强制关闭；不设置时按请求协议自动推导，HTTP 部署无需配置）
       # - COOKIE_SECURE=true
       # 可选：预置采集站（JSON 数组），用户端自动出现且默认勾选

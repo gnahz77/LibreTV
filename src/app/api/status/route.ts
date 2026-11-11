@@ -4,7 +4,7 @@ import { getEnvSources } from '@/lib/env-sources';
 import { getEnvLiveSources } from '@/lib/env-live-sources';
 import { getEnvSubscriptions } from '@/lib/env-subscriptions';
 import { getEnvRecommendSource } from '@/lib/env-recommend-source';
-import { getEnvImageMode } from '@/lib/env-image-mode';
+import { getEnvImageMode, isServerProxyDisabled } from '@/lib/env-image-mode';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +12,7 @@ export const runtime = 'nodejs';
 export async function GET(req: Request) {
   const passwordRequired = isPasswordConfigured();
   const verified = passwordRequired && sessionFromCookieHeader(req.headers.get('cookie'));
+  const serverProxyDisabled = isServerProxyDisabled();
   return NextResponse.json({
     passwordRequired,
     verified,
@@ -26,6 +27,8 @@ export async function GET(req: Request) {
     // 部署者通过 DEFAULT_RECOMMEND_SOURCE 指定的首页推荐数据源默认值（未配置时为 null）
     defaultRecommendSource: getEnvRecommendSource() ?? null,
     // 部署者通过 DEFAULT_IMAGE_MODE 指定的封面图加载方式默认值（未配置时为 null）
-    defaultImageMode: getEnvImageMode() ?? null,
+    defaultImageMode: serverProxyDisabled ? 'direct' : getEnvImageMode() ?? null,
+    // 部署者通过 DISABLE_SERVER_PROXY 禁用媒体/图片中转；客户端据此不再尝试代理回退
+    serverProxyDisabled,
   });
 }

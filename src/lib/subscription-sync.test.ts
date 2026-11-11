@@ -43,6 +43,7 @@ const status = (over: Partial<AuthStatusResponse> = {}): AuthStatusResponse => (
   defaultSubscriptions: [],
   defaultRecommendSource: null,
   defaultImageMode: null,
+  serverProxyDisabled: false,
   ...over,
 });
 
@@ -199,6 +200,14 @@ describe('applyEnvPresets · DEFAULT_IMAGE_MODE', () => {
     expect(useAppStore.getState().imageProxyMode).toBe('proxy');
     // 自动预置不算用户主动选择：部署者日后调整默认值时该用户应跟随
     expect(useAppStore.getState().imageProxyModeTouched).toBe(false);
+  });
+
+
+  it('服务端禁用代理时不把封面默认值设为 proxy', async () => {
+    useAppStore.setState({ imageProxyMode: 'direct', imageProxyModeTouched: false, serverProxyDisabled: false });
+    await applyEnvPresets(status({ defaultImageMode: 'proxy', serverProxyDisabled: true }));
+    expect(useAppStore.getState().serverProxyDisabled).toBe(true);
+    expect(useAppStore.getState().imageProxyMode).toBe('direct');
   });
 
   it('已主动选择过的用户（如 proxy）不被覆盖', async () => {

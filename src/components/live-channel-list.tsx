@@ -158,6 +158,7 @@ export function LiveChannelList({ channels, groups, currentUrl, onSelect, onFilt
   const liveRecent = useAppStore((s) => s.liveRecent);
   const imageProxyMode = useAppStore((s) => s.imageProxyMode);
   const customImageProxy = useAppStore((s) => s.customImageProxy);
+  const serverProxyDisabled = useAppStore((s) => s.serverProxyDisabled);
 
   const [view, setView] = useState<View>('all');
   const [group, setGroup] = useState<string>('');
@@ -505,6 +506,7 @@ export function LiveChannelList({ channels, groups, currentUrl, onSelect, onFilt
                   probe={probeResults.get(filtered[vi.index].url)}
                   logo={filtered[vi.index].logo}
                   imageProxyMode={imageProxyMode}
+                  serverProxyDisabled={serverProxyDisabled}
                   customProxy={customImageProxy}
                   onSelect={onSelect}
                   onRemoveRecent={view === 'recent' ? removeRecent : undefined}
@@ -542,6 +544,7 @@ const ChannelRow = memo(function ChannelRow({
   probe,
   logo,
   imageProxyMode,
+  serverProxyDisabled = false,
   customProxy,
   onSelect,
   onRemoveRecent,
@@ -553,6 +556,7 @@ const ChannelRow = memo(function ChannelRow({
   probe?: ProbeResult;
   logo?: string;
   imageProxyMode: 'direct' | 'proxy' | 'custom';
+  serverProxyDisabled?: boolean;
   customProxy: string;
   onSelect: (channel: LiveChannelItem) => void;
   /** 仅最近视图传入：删除该条观看记录 */
@@ -615,6 +619,7 @@ const ChannelRow = memo(function ChannelRow({
               url={logo}
               mode={imageProxyMode}
               customProxy={customProxy}
+              serverProxyDisabled={serverProxyDisabled}
               alt=""
               className="w-full h-full object-contain"
               onExhausted={() => setLogoFailed(true)}

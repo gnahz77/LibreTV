@@ -383,6 +383,7 @@ export function SwitchSourceModal({
                         url={c.result.pic}
                         mode={store.imageProxyMode}
                         customProxy={store.customImageProxy}
+                        serverProxyDisabled={store.serverProxyDisabled}
                         alt={c.result.name}
                         className="w-full h-full object-cover"
                         onExhausted={() => setImgFailed((prev) => ({ ...prev, [key]: true }))}
