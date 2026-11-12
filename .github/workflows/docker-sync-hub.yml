@@ -24,7 +24,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  DOCKERHUB_IMAGE: docker.io/bestzwei/libretv
+  DOCKERHUB_IMAGE: docker.io/gnahz77/libretv
 
 jobs:
   sync:
